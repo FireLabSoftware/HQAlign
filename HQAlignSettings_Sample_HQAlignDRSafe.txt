@@ -1,0 +1,97 @@
+# Category	# Variable	# Value	# Description
+# Description of Experiment	ExptDesc	HQAlign_Test	# A text description used to identify data for the entire experiment
+# Reference Sequence	ReferenceFileName	celmiRsample.fasta	"# file with reference sequences, 'ask' to ask the user"
+# Sequencer Output	SampleDesc	Sample_Data	# Text Describing the individual sample
+	ReadFileName	SampleData.fastq	# 'ask' asks the user using a dialog box
+	StartBarcode	GCAG	# Barcode at start of sequence (e.g. 'GCAC'). '' means no barcode
+	EndLinker	CACT	"# Linker at end of sequence (e.g. 'GCACGGACCAGATTGA'). '' means no linker or not in sequence, can specify just a few bases at the beginning if these are unique in the linker, and this will require that only these match the linker"
+	DataUpper	True	"# TrueAll data is in upper case (also all nonstandard characters will be treated as ""A"".  Setting this to false performs an upper casing and filtering of data for AacCGgTt"
+# Alignment Requirement	MinRead	19	# Minimal read length for analysis (Linker and Barcode lengths will be added to this value by HQAlign).  Sequences shorter than this will not be tested for alignment
+	MaxRead	999	# Maximal analyzed length (Linker and Barcode lengths will be added to this value by HQAlign).  HQAlign Ignores all bases beyond this point.
+	MaxMisMatch	1	"# Maximum allowed mismatches.  This can change between different lines in the batch file, in which case the value here needs to be the maximum value"
+	MinMatch	18	"# Minimum number of (non-linker non-barcode) matches, starting from the first base and going forward that must match, with fewer than ""MM"" mismatches interspersed"
+	ExtensionOK	True	"# True: Keep all reads meeting initial match criteria, allowing any number of downstream mismatches.  False: count mismatches through the entire read (To require perfect match from start to end of read set Extension_OK to False and Max_MisMatch to 0)"
+	RequireEndLinker	False	# True- Require the specified bases of the 3' linker to be present of the tag is ignored
+	Seed	9	# Seed length... this is the segment size that the program looks for as an initial perfect match.  Odd things can happen if Seed*MM>MinRead
+# Multiple matches to one tag?	MultipleMatchMode	FirstChampion	"#    Settings for MultipleMatchMode.  These can also be set in the BatchList below, with different setting for different lines in the batch list.  In that case, put in the max value for Max Mismatch above"
+			#    FirstMatch ~ Return 1st match in reference file that meets match criteria
+			"#    FirstChampion ~ Return 1st match in reference file that (i) meets match criteria, and (ii) has the best match score"
+			#    AllMatches ~ Return all matches in reference file that meet match criteria
+			"#    AllChampions ~ Return all matches in reference file that (i) meet match criteria, and (ii) tie for best match score"
+			#    UniqueMatchesOnly ~ Return only matches in the reference file that (i) meet the match criteria and (ii) where no other sites match criteria
+			#    UniqueChampionsOnly ~ Return only matches in the reference file that (i) have best match scores and (iii) where no other target sites have that score
+			#    SuperHits_n ~ Return only matches in the reference file that (i) meet match criteria and (ii) where any other match to the query has at least n additional mismatches'''
+# Collapse duplicate tags?	StartCollapse	False	# StartCollapse keeps only one instance on each strand for any given base (equivalent to start occurences rather than instances)
+	StartLenCollapse	False	# StartCollapse keeps only one instance on each strand for any given base (equivalent to start+end occurences rather than instances)
+	DataPreCollapsed	False	# Data file contains read sequences that are already collapsed.  Tag names in FastA file are of the format >nnnnn-xxx where xxx is the multiplicity of each tag
+# Filter Reads?	TargetStart	None	"# if defined then only sequence reads starting with that string will be considered.  ""None"" to ignore"
+	TargetLength	0	# if >0 then only sequence reads of that length (following barcode and linker trimming) will be considered.  Zero to ignore
+# Grouping of data for output?	TotalBin	False	# one bin that will be a summary of the total file
+	GeneBin	True	"# do gene by gene summaries for each gene? Can be done as total, sense or antisense."
+	BinBin	False	# do segment by segment summaries for each gene?
+	BaseBin	False	# provide a base-by-base summary
+	Granularity	30	"# how fine a granularity; 1 means that every base is recorded as a bin, 100bins of 100"
+# Make Tabular output file?	TabularOutput	True	"# True to provide a detailed output file (non-exclusive alternative is SimpleOutput or Pileup, but this is required for all other output)"
+	TabularOutputFileName	auto	# Output file name... auto is an automatically generated time-specific name
+	TransposeFile	True	# provides the output file in transposed format (horizontal to vertical shift)
+  ##Info for each segment?	Bin_Name	True	# Output a column with the gene name for each bin
+	Bin_Size	False	# Output a column with the size of each bin
+	Bin_Start	False	# Output a column with the start of each bin
+	Bin_End	False	# Output a column with the end of each bin
+	Bin_Sequence	True	# Output a column with the sequence of each bin
+	Bin_Composition	False	# Output 4 columns with the sequence composition
+  ##Start Positions?	StartSense	True	# Report the start of each sense match?
+	StartAntiSense	True	# Report the start of each AntiSense match?
+	StartTotal	False	# Report the start of every match?
+  ##Dyad Positions?	DyadSense	False	"# Report a hypothetical Dyad distribution, with Dyad being DyadOffset away from each start (sense reads)"
+	DyadAntiSense	False	"# Report a hypothetical Dyad distribution, with Dyad being DyadOffset away from each start (antisense reads)"
+	DyadTotal	False	"# Report a hypothetical Dyad distribution, with Dyad being DyadOffset away from each start"
+	DyadOffset	73	"# This is the distance between the beginning of a read and the relevant feature, e.g. 73 for a Nucleosome dyad"
+  ##End Positions?	EndSense	False	# Report the end of each sense match?
+	EndAntiSense	False	# Report the end of each antisense match?
+	EndTotal	False	# Report the end of each match?
+  ##Coverage?	CoverageSense	False	# Report coverage by sense reads
+	CoverageAntiSense	False	# Report coverage by AntiSense reads
+	CoverageTotal	False	# Report coverage by total reads
+	VirtualSegmentLen	0	"# This means the length of the insert will be used as the segment length for coverage (e.g. 147 for a nucleosome).  If '0',  actual length of  read is used"
+  ##Size histograms?	SizeHistogramSense	False	# Report a sense size histogram for each bin
+	SizeHistogramAntiSense	False	# Report an antisense size histogram for each bin
+	SizeHistogramTotal	False	"# Report an ""all-hit"" size histogram for each bin"
+	Base1SizeHistogram	False	# Augments the size histogram to provide both size and first base (e.g. 22G versus 22A)
+  ##Match spectra?	BaseMatchesSense	False	# Report a summary of matching and mismatching bases (sense hits) for each bin
+	BaseMatchesAntiSense	False	# Report a summary of matching and mismatching bases (antisense hits) for each bin
+	BaseMatchesTotal	False	# Report a summary of matching and mismatching bases (total hits) for each bin
+	ReadMatchesSense	False	# Report a summary of matching and mismatching reads for each bin (sense)-- Gets used for Pileup also
+	ReadMatchesAntiSense	False	# Report a summary of matching and mismatching reads for each bin (antisense)-- Gets used for Pileup also
+	ReadMatchesTotal	False	# Report a summary of matching and mismatching reads for each bin (antisense)-- Gets used for Pileup also
+  ##Base/k-mer composition?	CompositionMatrix	False	# prepare a composition list for sites around each hit.  Can be indexed (for each position) or non-indexed (one list)
+	CompositionCenterEnd	False	"# False Centers on the end of each read, true on the beginning of each read."
+	CompositionIndexed	False	# True gives a composition for each position in the segment that is being analyzed.  False gives a single composition for the whole segment.
+	CompositionTupleLen	1	# >1 for longer oligonucleotide queries (tuples)
+	Composition_Start	-25	# how far upstream of a given match to start the composition window
+	Composition_End	10	# how far downstream of a given match to extend the composition window
+# Make simple file of hits?	SimpleOutput	False	# True to provide a simple output file with the locations of each hit
+	SimpleOuputFormat	hqall	# File formats for simple output
+			# 'hqall' gives a match by match output
+			"# 'hqsum' aggregates matches for each position, outputting a sorted and summed list of hits (only for short reference sequences, below ~1MB)"
+			 # 'bed' UCSC-browser compatible bed file
+			# 'psl' Standard psl alignment output 
+			"# 'bedgraph'.  Outputs two bedgraph files, one for sense coverage and one for antisense coverage (http://genome.ucsc.edu/goldenPath/help/bedgraph.html)"
+	SimpleOutputFileName	auto	"# FileName for simple output file ""ask"" asks in the program, and ""auto"" gives a name automatically"
+# Make “PileUp” file?	PileUp	False	# Generate a pileup file
+	PileUpFileName	auto	# PileUp file name... auto is an automatically generated time-specific name
+	PileSep	-1	# minimum separation between entries in the pileup view of the alignment.  -1 for a full pileup
+	KeepFullQuery	True	"# True to add the full read for each match to the target (False allows the program to give just the segment that matches the target with <MaxMisMatch mismatches, i.e. the reads will effectively be truncated and ignored after that number of mismatches)"
+# Store index after run?	StoreIndex	False	# Keep an index based on the reference sequence?  Speeds up subsequent runs with same refereence for reference sequence sets >5MB.  Requires up to (or more than) 10x more disk space than the original file
+	IndexFilePath	auto	# Where to store the index.  'auto' will store the index in the same directory as the original reference sequence file (original file name+'.Seed-nn_MM-nn.hqref')
+	MinFreeGB	5	"# To keep HQAlign from filling your hard drive.  If the program thinks less than this amount of space will be available on the relevant storage drive after storing the index, it will avoid storing"
+# Debug and test features	ReGran	1000000	# How frequently to report the indexing process
+	ReportInterval	100000	# How often to report progress as the program is matching queries
+	StopAfterReference	0	"# For trial runs, stop after a limited number of bases in the reference sequence file; 0~ keep going until finished"
+	StopAfterQuery	0	"# For trial runs, stop after a limited number of queries (tags); 0~ keep going until finished"
+	HQDump	False	# Dump Local Variables Into A file called 'dump.txt'
+# BatchProcess	MultipleDataSets	False	# True takes a list of samples from the following table -- I've set this example to be run either with the single file specification above or with multiple files as below (in which case this should be set to True)
+#StartBatchTable			
+SampleDesc	StartBarcode	EndLinker	ReadFileName
+SampleRNA	GCAG	CACT	SampleData.fastq
+#EndBatchTable			
